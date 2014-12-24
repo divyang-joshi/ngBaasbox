@@ -68,7 +68,6 @@ angular.module('ngBaasbox.api', [])
              *  See http://www.baasbox.com/documentation/?shell#login
              */
             login: function (username, password) {
-
                 var passData = {
                     username: username,
                     password: password,
@@ -102,12 +101,23 @@ angular.module('ngBaasbox.api', [])
                 return q.promise;
             },
 
+            /**
+             * Retrieves details about the logged in user
+             * @returns {*} - Promise with the user returned
+             */
             me: function () {
-                console.log("Not implemented yet.")
+                return Get("me");
             },
 
-            updateProfile: function () {
-                console.log("Not implemented yet.")
+            /**
+             * Updates the user profile.
+             * @param user - Is of format:
+             *  { "visibleByTheUser": {}, "visibleByFriends": {}, "visibleByRegisteredUsers": {}, "visibleByAnonymousUsers": {} }
+             *  where any of the 4, or all can be provided.
+             * @returns {*} - Promise with the user returned
+             */
+            updateProfile: function (user) {
+                return Put("me", updateCurrentToString(user))
             },
 
             changePassword: function () {
@@ -143,20 +153,20 @@ angular.module('ngBaasbox.api', [])
          * @returns {*} - A promise, with success containing the response data (not the code, the actual data)
          */
         function Post_Json(url, data) {
-            var deferred = $q.defer();
+            var q = $q.defer();
             var HEADER = {
                 headers: {
                     'X-BAASBOX-APPCODE': APPCODE,
-                    'X-BB-SESSION': User.getSession()
+                    'X-BB-SESSION': SESSION
                 }
             }
             $http.post(BASEURL + url, data, HEADER).then(function (response) { // Success
-                deferred.resolve(response.data.data);
+                q.resolve(response.data.data);
             }, function (response) {
                 console.log(response);
-                deferred.reject(response);
+                q.reject(response);
             });
-            return deferred.promise;
+            return q.promise;
         }
 
         /**
@@ -190,6 +200,53 @@ angular.module('ngBaasbox.api', [])
             return deferred.promise;
         }
 
+        /**
+         * For all GETs. Providing no arg means its a get all.
+         * @param url - Which url to post to. Include only the API url, e.g "api/user"
+         * @param arg - What item to fetch, for example: "cesare"
+         *  Note: The final url would translate to: "api/user/cesare"
+         * @returns {*} - A promise, with success containing the response data (not the code, the actual data)
+         */
+        function Get(url, arg) {
+            var q = $q.defer();
+            var HEADER = {
+                headers: {
+                    'X-BAASBOX-APPCODE': APPCODE,
+                    'X-BB-SESSION': SESSION
+                }
+            };
+            var finalUrl = arg ? BASEURL + url + "/" + arg : BASEURL + url;
+            $http.get(finalUrl, HEADER).then(function (response) { // Success
+                q.resolve(response.data.data);
+            }, function (response) {
+                console.log(response);
+                q.reject(response);
+            });
+            return q.promise;
+        }
+
+        /**
+         * For all PUTs with JSON data.
+         * @param url - Which url to post to. Include only the API url, e.g "api/user"
+         * @param data - Data the pass as a JSON object, e.g {name:"test",age:21}
+         * @returns {*} - A promise, with success containing the response data (not the code, the actual data)
+         */
+        function Put(url, data) {
+            var q = $q.defer();
+            var HEADER = {
+                headers: {
+                    'X-BAASBOX-APPCODE': APPCODE,
+                    'X-BB-SESSION': SESSION
+                }
+            }
+            $http.put(BASEURL + url, data, HEADER).then(function (response) { // Success
+                q.resolve(response.data.data);
+            }, function (response) {
+                console.log(response);
+                q.reject(response);
+            });
+            return q.promise;
+        }
 
         /*======================================================*
             HELPER FUNCTIONS - USER
@@ -209,6 +266,20 @@ angular.module('ngBaasbox.api', [])
                 visibleByRegisteredUsers: user.visibleByRegisteredUsers ? user.visibleByRegisteredUsers : {},
                 visibleByAnonymousUsers: user.visibleByAnonymousUsers ? user.visibleByAnonymousUsers : {}
             });
+        }
+
+        /**
+         * Stringify the user object with only fields (no username and password)
+         * @param user - As in parent
+         * @returns {*} - String
+         */
+        function updateCurrentToString(user) {
+            var toReturn = {};
+            if (user.visibleByTheUser) toReturn.visibleByTheUser = user.visibleByTheUser;
+            if (user.visibleByFriends) toReturn.visibleByFriends = user.visibleByFriends;
+            if (user.visibleByRegisteredUsers) toReturn.visibleByRegisteredUsers = user.visibleByRegisteredUsers;
+            if (user.visibleByAnonymousUsers) toReturn.visibleByAnonymousUsers = user.visibleByAnonymousUsers;
+            return JSON.stringify(toReturn);
         }
 
 }]);
