@@ -129,7 +129,7 @@ angular.module('ngBaasbox.api', [])
              * @param username - Who to fetch
              * @returns {*} - Promise with the user returned
              */
-            getUserDetails: function (username) {
+            getSingleUser: function (username) {
                 return Get("user", username, null);
             },
 
@@ -166,6 +166,46 @@ angular.module('ngBaasbox.api', [])
             // TODO: Implement
             changeUsername: function () {
                 console.log("Not implemented yet.")
+            },
+
+            /*======================================================*
+                 FRIENDS
+             *======================================================*/
+
+            /**
+             * Follow a user
+             * @param username - User to follow
+             * @returns {*} - Promise with "ok"
+             */
+            followUser: function (username) {
+                return Post_Json("follow/" + username, {});
+            },
+
+            /**
+             * Unfollow a user
+             * @param username - User to unfollow
+             * @returns {*} - Promise with "ok"
+             */
+            unfollowUser: function (username) {
+                return Delete("follow", username);
+            },
+
+            /**
+             * Fetch the list of users following the user
+             * @param username - username of the user
+             * @returns {*} - Promise of users
+             */
+            fetchFollowing: function (username) {
+                return Get("following", username, null);
+            },
+
+            /**
+             * Get the list of users the user is following
+             * @param username - username of the user
+             * @returns {*} - Promise of users
+             */
+            fetchFollowers: function (username) {
+                return Get("followers", username, null);
             },
 
             /*======================================================*
@@ -301,20 +341,20 @@ angular.module('ngBaasbox.api', [])
             revokePermissionByRole: function (collectionName, id, action, role) {
                 var url = getDocUrl(collectionName) + "/" + id + "/" + action + "/role";
                 return Delete(url, role);
-            }
+            },
 
+            /*======================================================*
+                 LINKS
+             *======================================================*/
+
+            createLink: function (sourceId, destinationId, label) {
+                return Post_Json("link/" + sourceId + "/" + label + "/" + destinationId, {})
+            }
 
 
         };
 
-        /**
-         * Generate a url for documents. Adds document/collectionName
-         * @param collectionName - The name of the collection
-         * @returns {string} - String of the URL
-         */
-        function getDocUrl(collectionName) {
-            return "document/" + collectionName;
-        }
+
 
         /*======================================================*
             HELPER FUNCTIONS - HTTP CALLS
@@ -479,6 +519,19 @@ angular.module('ngBaasbox.api', [])
             if (user.visibleByRegisteredUsers) toReturn.visibleByRegisteredUsers = user.visibleByRegisteredUsers;
             if (user.visibleByAnonymousUsers) toReturn.visibleByAnonymousUsers = user.visibleByAnonymousUsers;
             return JSON.stringify(toReturn);
+        }
+
+        /*======================================================*
+            HELPER FUNCTIONS - DOCUMENTS
+         *======================================================*/
+
+        /**
+         * Generate a url for documents. Adds document/collectionName
+         * @param collectionName - The name of the collection
+         * @returns {string} - String of the URL
+         */
+        function getDocUrl(collectionName) {
+            return "document/" + collectionName;
         }
 
 }]);
