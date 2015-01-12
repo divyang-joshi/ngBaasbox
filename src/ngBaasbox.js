@@ -30,9 +30,7 @@ angular.module('ngBaasbox.api', [])
                 USER
              *======================================================*/
 
-            /**
-             * Registers a new user
-             * @param user - A JSON object representing a user. An example:
+            /*
              *  user = {
              *      username: "user",
              *      password: "pass",
@@ -49,8 +47,12 @@ angular.module('ngBaasbox.api', [])
              *      },
              *      visibleByAnonymousUsers: {}
              *  }
+             */
+
+            /**
+             * Registers a new user
+             * @param user - A JSON object representing a user.
              * @returns {*} A promise, with success containing the data (contains user, signUpDate, X-BB-SESSION).
-             *  See http://www.baasbox.com/documentation/?shell#sign-up
              *
              */
             signup: function (user) {
@@ -69,7 +71,6 @@ angular.module('ngBaasbox.api', [])
              * @param username - the username
              * @param password - the password
              * @returns {*} - A promise, with success containing the data (contains user, signUpDate, X-BB-SESSION).
-             *  See http://www.baasbox.com/documentation/?shell#login
              */
             login: function (username, password) {
                 var passData = {
@@ -113,10 +114,14 @@ angular.module('ngBaasbox.api', [])
                 return Get("me", null, null);
             },
 
+            /*
+             { "visibleByTheUser": {}, "visibleByFriends": {}, "visibleByRegisteredUsers": {}, "visibleByAnonymousUsers": {} }
+             */
+
             /**
              * Updates the user profile.
-             * @param user - Is of format:
-             *  { "visibleByTheUser": {}, "visibleByFriends": {}, "visibleByRegisteredUsers": {}, "visibleByAnonymousUsers": {} }
+             * @param user - Is of format: Should have 4 objects of the keys:
+             *  visibleByTheUser, visibleByFriends, visibleByRegisteredUsers, visibleByAnonymousUsers,
              *  where any of the 4, or all can be provided.
              * @returns {*} - Promise with the user returned
              */
@@ -297,7 +302,7 @@ angular.module('ngBaasbox.api', [])
              * @param username - The username of the user to whom you want to assign the grant
              * @returns {*} - Promise containing no returned data
              */
-            grandPermissionByUser: function (collectionName, id, action, username) {
+            grantPermissionByUser: function (collectionName, id, action, username) {
                 var url = getDocUrl(collectionName) + "/" + id + "/" + action + "/user/" + username;
                 return Put(url, {}, null);
             },
@@ -311,7 +316,7 @@ angular.module('ngBaasbox.api', [])
              *  One of: anonymous, registered, administrator, plus those defined by the administrator
              * @returns {*} - Promise containing no returned data
              */
-            grandPermissionByRole: function (collectionName, id, action, role) {
+            grantPermissionByRole: function (collectionName, id, action, role) {
                 var url = getDocUrl(collectionName) + "/" + id + "/" + action + "/role/" + role;
                 return Put(url, {}, null);
             },
@@ -347,8 +352,46 @@ angular.module('ngBaasbox.api', [])
                  LINKS
              *======================================================*/
 
+            /**
+             * Links allow to connect documents and files to each other.
+             * To create a link you must provide the two documents you want to connect and the link name.
+             * Since links have a direction, the first document will be the source node of the link and
+             * the second one will be the destination node.
+             * @param sourceId - The ID of the first document or file to link
+             * @param destinationId - The ID of the second document or file to link
+             * @param label - The link name. Can be any valid string
+             * @returns {*} - Promise containing non-writable fields about the link
+             */
             createLink: function (sourceId, destinationId, label) {
                 return Post_Json("link/" + sourceId + "/" + label + "/" + destinationId, {})
+            },
+
+            /**
+             * Get link by Id
+             * @param id - Id of the link
+             * @returns {*} - Promise containing non-writable fields about the link
+             */
+            getLinkById: function (id) {
+                return Get("link", id, null);
+            },
+
+            /**
+             * Get a single or multiple links using a query.
+             * @param query - the query.  For example:
+             *  where=in.name.toLowerCase() like 'john%' and label="customer"
+             * @returns {*}- Promise containing an array of links
+             */
+            queryLink: function (query) {
+                return Get("link", null, query);
+            },
+
+            /**
+             * Deletes a link
+             * @param id - Id of the link
+             * @returns {*} - Promise containg no data, just "ok" if success
+             */
+            deleteLink: function (id) {
+                return Delete("link", id);
             }
 
 
@@ -363,7 +406,7 @@ angular.module('ngBaasbox.api', [])
         /**
          * Use this method to post by passing data as a JSON
          * @param url - Which url to post to. Include only the API url, e.g "api/user"
-         * @param data - Data the pass as a JSON object, e.g {name:"test",age:21}
+         * @param data - Data the pass as a JSON object, e.g object name:"test",age:21
          * @returns {*} - A promise, with success containing the response data (not the code, the actual data)
          */
         function Post_Json(url, data) {
@@ -387,7 +430,7 @@ angular.module('ngBaasbox.api', [])
          * Use this method to post by passing data as encoded URL, for example:
          *  -d "username=cesare" -d "password=password"
          * @param url - Which url to post to. Include only the API url, e.g "api/user"
-         * @param data - Data the pass as a JSON object, e.g {name:"test",age:21}
+         * @param data - Data the pass as a JSON object, e.g object name:"test",age:21
          * @returns {*} - A promise, with success containing the response data (not the code, the actual data)
          */
         function Post_Encoded(url, data) {
@@ -430,7 +473,7 @@ angular.module('ngBaasbox.api', [])
                 }
             };
             var finalUrl = arg ? BASEURL + url + "/" + arg : BASEURL + url;
-            if (query) finalUrl += "?" + query;
+            if (query) finalUrl += "?" + encodeURIComponent(query);
             $http.get(finalUrl, HEADER).then(function (response) { // Success
                 q.resolve(response.data.data);
             }, function (response) {
@@ -443,7 +486,7 @@ angular.module('ngBaasbox.api', [])
         /**
          * For all PUTs with JSON data.
          * @param url - Which url to post to. Include only the API url, e.g "api/user"
-         * @param data - Data the pass as a JSON object, e.g {name:"test",age:21}
+         * @param data - Data the pass as a JSON object, e.g object name:"test",age:21
          * @returns {*} - A promise, with success containing the response data (not the code, the actual data)
          */
         function Put(url, data, arg) {

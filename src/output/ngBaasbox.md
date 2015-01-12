@@ -1,9 +1,8 @@
-ngBaasbox
-=========
+# Global
 
-An angular wrapper for Baasbox
 
-# Documentation
+
+
 
 * * *
 
@@ -14,7 +13,7 @@ Initialize baasbox
 **Parameters**
 
 **url**: , Where all api call will be made. This is the base URL with the slash after the url included.
-As an example: www.myServer.com/ or 192.168.1.1:800/
+ As an example: www.myServer.com/ or 192.168.1.1:800/
 
 **appcode**: , The application code you first ran the application with. The default is 1234567890
 
@@ -69,8 +68,8 @@ Updates the user profile.
 **Parameters**
 
 **user**: , Is of format: Should have 4 objects of the keys:
-visibleByTheUser, visibleByFriends, visibleByRegisteredUsers, visibleByAnonymousUsers,
-where any of the 4, or all can be provided.
+ visibleByTheUser, visibleByFriends, visibleByRegisteredUsers, visibleByAnonymousUsers,
+ where any of the 4, or all can be provided.
 
 **Returns**: `*`, - Promise with the user returned
 
@@ -89,7 +88,7 @@ Allows to retrieve information about a user profile
 ### getAllUsers(query) 
 
 Retrieve a list of users. This API supports pagination and query criteria
-See http://www.baasbox.com/documentation/?shell#pagination-and-query-criteria
+ See http://www.baasbox.com/documentation/?shell#pagination-and-query-criteria
 
 **Parameters**
 
@@ -177,7 +176,7 @@ Search for documents, using some query.
 **collectionName**: , The name of the collection
 
 **query**: , the query to find the documents, for example:
-query = page=0&recordsPerPage=1
+ query = page=0&recordsPerPage=1
 
 **Returns**: `*`, - Promise containing documents
 
@@ -271,7 +270,7 @@ Grants permission to the document to a single role
 **action**: , The grant you want to assign. One of: read, update, delete, all.
 
 **role**: , The name of the role to whom you want to grant the permission
-One of: anonymous, registered, administrator, plus those defined by the administrator
+ One of: anonymous, registered, administrator, plus those defined by the administrator
 
 **Returns**: `*`, - Promise containing no returned data
 
@@ -306,7 +305,7 @@ Revokes permission on a document to the role
 **action**: , The grant you want to revoke. One of: read, update, delete, all.
 
 **role**: , The name of the role to whom you want to revoke the permission
-One of: anonymous, registered, administrator, plus those defined by the administrator
+ One of: anonymous, registered, administrator, plus those defined by the administrator
 
 **Returns**: `*`, - Promise containing no returned data
 
@@ -347,7 +346,7 @@ Get a single or multiple links using a query.
 **Parameters**
 
 **query**: , the query.  For example:
-where=in.name.toLowerCase() like 'john%' and label="customer"
+ where=in.name.toLowerCase() like 'john%' and label="customer"
 
 **Returns**: `*`, - Promise containing an array of links
 
@@ -362,4 +361,116 @@ Deletes a link
 
 **Returns**: `*`, - Promise containg no data, just "ok" if success
 
+
+### Post_Json(url, data) 
+
+Use this method to post by passing data as a JSON
+
+**Parameters**
+
+**url**: , Which url to post to. Include only the API url, e.g "api/user"
+
+**data**: , Data the pass as a JSON object, e.g object name:"test",age:21
+
+**Returns**: `*`, - A promise, with success containing the response data (not the code, the actual data)
+
+
+### Post_Encoded(url, data) 
+
+Use this method to post by passing data as encoded URL, for example:
+ -d "username=cesare" -d "password=password"
+
+**Parameters**
+
+**url**: , Which url to post to. Include only the API url, e.g "api/user"
+
+**data**: , Data the pass as a JSON object, e.g object name:"test",age:21
+
+**Returns**: `*`, - A promise, with success containing the response data (not the code, the actual data)
+
+
+### Get(url, arg) 
+
+For all GETs. Providing no arg means its a get all.
+
+**Parameters**
+
+**url**: , Which url to post to. Include only the API url, e.g "api/user"
+
+**arg**: , What item to fetch, for example: "cesare"
+ Note: The final url would translate to: "api/user/cesare"
+
+**Returns**: `*`, - A promise, with success containing the response data (not the code, the actual data)
+
+
+### Put(url, data) 
+
+For all PUTs with JSON data.
+
+**Parameters**
+
+**url**: , Which url to post to. Include only the API url, e.g "api/user"
+
+**data**: , Data the pass as a JSON object, e.g object name:"test",age:21
+
+**Returns**: `*`, - A promise, with success containing the response data (not the code, the actual data)
+
+
+### Delete(url, id) 
+
+For all DELETEs
+
+**Parameters**
+
+**url**: , Which url to call delete. Include only the API url, e.g "api/user"
+
+**id**: , Id of the said object to delete
+
+**Returns**: `*`, - A promise, with success containing the response data (not the code, the actual data)
+
+
+### makeNewUserData(user) 
+
+Stringify the user object
+
+**Parameters**
+
+**user**: , As in parent
+
+**Returns**: `*`, - String
+
+
+### updateCurrentToString(user) 
+
+Stringify the user object with only fields (no username and password)
+
+**Parameters**
+
+**user**: , As in parent
+
+**Returns**: `*`, - String
+
+
+### getDocUrl(collectionName) 
+
+Generate a url for documents. Adds document/collectionName
+
+**Parameters**
+
+**collectionName**: , The name of the collection
+
+**Returns**: `string`, - String of the URL
+
+
+
 * * *
+
+
+
+
+
+
+
+
+
+
