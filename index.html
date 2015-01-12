@@ -32,6 +32,368 @@
 <a id="ngbaasbox" class="anchor" href="#ngbaasbox" aria-hidden="true"><span class="octicon octicon-link"></span></a>ngBaasbox</h1>
 
 <p>An angular wrapper for Baasbox</p>
+
+<h1>
+<a id="documentation" class="anchor" href="#documentation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Documentation</h1>
+
+<hr>
+
+<h3>
+<a id="initurl-appcode-session" class="anchor" href="#initurl-appcode-session" aria-hidden="true"><span class="octicon octicon-link"></span></a>init(url, appcode, session)</h3>
+
+<p>Initialize baasbox</p>
+
+<p><strong>Parameters</strong></p>
+
+<p><strong>url</strong>: , Where all api call will be made. This is the base URL with the slash after the url included.
+As an example: <a href="http://www.myServer.com/">www.myServer.com/</a> or 192.168.1.1:800/</p>
+
+<p><strong>appcode</strong>: , The application code you first ran the application with. The default is 1234567890</p>
+
+<p><strong>session</strong>: , The session code if it exists.</p>
+
+<h3>
+<a id="signupuser" class="anchor" href="#signupuser" aria-hidden="true"><span class="octicon octicon-link"></span></a>signup(user)</h3>
+
+<p>Registers a new user</p>
+
+<p><strong>Parameters</strong></p>
+
+<p><strong>user</strong>: , A JSON object representing a user.</p>
+
+<p><strong>Returns</strong>: <code>*</code>, A promise, with success containing the data (contains user, signUpDate, X-BB-SESSION).</p>
+
+<h3>
+<a id="loginusername-password" class="anchor" href="#loginusername-password" aria-hidden="true"><span class="octicon octicon-link"></span></a>login(username, password)</h3>
+
+<p>Login a user</p>
+
+<p><strong>Parameters</strong></p>
+
+<p><strong>username</strong>: , the username</p>
+
+<p><strong>password</strong>: , the password</p>
+
+<p><strong>Returns</strong>: <code>*</code>, - A promise, with success containing the data (contains user, signUpDate, X-BB-SESSION).</p>
+
+<h3>
+<a id="logout" class="anchor" href="#logout" aria-hidden="true"><span class="octicon octicon-link"></span></a>logout()</h3>
+
+<p>TODO: Implement the pushToken</p>
+
+<p>Logout the user from the server</p>
+
+<p><strong>Returns</strong>: <code>*</code>, - Promise, which if a success, returns "user logged out"</p>
+
+<h3>
+<a id="me" class="anchor" href="#me" aria-hidden="true"><span class="octicon octicon-link"></span></a>me()</h3>
+
+<p>Retrieves details about the logged in user</p>
+
+<p><strong>Returns</strong>: <code>*</code>, - Promise with the user returned</p>
+
+<h3>
+<a id="updateprofileuser" class="anchor" href="#updateprofileuser" aria-hidden="true"><span class="octicon octicon-link"></span></a>updateProfile(user)</h3>
+
+<p>Updates the user profile.</p>
+
+<p><strong>Parameters</strong></p>
+
+<p><strong>user</strong>: , Is of format: Should have 4 objects of the keys:
+visibleByTheUser, visibleByFriends, visibleByRegisteredUsers, visibleByAnonymousUsers,
+where any of the 4, or all can be provided.</p>
+
+<p><strong>Returns</strong>: <code>*</code>, - Promise with the user returned</p>
+
+<h3>
+<a id="getsingleuserusername" class="anchor" href="#getsingleuserusername" aria-hidden="true"><span class="octicon octicon-link"></span></a>getSingleUser(username)</h3>
+
+<p>Allows to retrieve information about a user profile</p>
+
+<p><strong>Parameters</strong></p>
+
+<p><strong>username</strong>: , Who to fetch</p>
+
+<p><strong>Returns</strong>: <code>*</code>, - Promise with the user returned</p>
+
+<h3>
+<a id="getallusersquery" class="anchor" href="#getallusersquery" aria-hidden="true"><span class="octicon octicon-link"></span></a>getAllUsers(query)</h3>
+
+<p>Retrieve a list of users. This API supports pagination and query criteria
+See <a href="http://www.baasbox.com/documentation/?shell#pagination-and-query-criteria">http://www.baasbox.com/documentation/?shell#pagination-and-query-criteria</a></p>
+
+<p><strong>Parameters</strong></p>
+
+<p><strong>query</strong>: , pagination and query criteria</p>
+
+<p><strong>Returns</strong>: <code>*</code>, - Promise with the users returned</p>
+
+<h3>
+<a id="followuserusername" class="anchor" href="#followuserusername" aria-hidden="true"><span class="octicon octicon-link"></span></a>followUser(username)</h3>
+
+<p>Follow a user</p>
+
+<p><strong>Parameters</strong></p>
+
+<p><strong>username</strong>: , User to follow</p>
+
+<p><strong>Returns</strong>: <code>*</code>, - Promise with "ok"</p>
+
+<h3>
+<a id="unfollowuserusername" class="anchor" href="#unfollowuserusername" aria-hidden="true"><span class="octicon octicon-link"></span></a>unfollowUser(username)</h3>
+
+<p>Unfollow a user</p>
+
+<p><strong>Parameters</strong></p>
+
+<p><strong>username</strong>: , User to unfollow</p>
+
+<p><strong>Returns</strong>: <code>*</code>, - Promise with "ok"</p>
+
+<h3>
+<a id="fetchfollowingusername" class="anchor" href="#fetchfollowingusername" aria-hidden="true"><span class="octicon octicon-link"></span></a>fetchFollowing(username)</h3>
+
+<p>Fetch the list of users following the user</p>
+
+<p><strong>Parameters</strong></p>
+
+<p><strong>username</strong>: , username of the user</p>
+
+<p><strong>Returns</strong>: <code>*</code>, - Promise of users</p>
+
+<h3>
+<a id="fetchfollowersusername" class="anchor" href="#fetchfollowersusername" aria-hidden="true"><span class="octicon octicon-link"></span></a>fetchFollowers(username)</h3>
+
+<p>Get the list of users the user is following</p>
+
+<p><strong>Parameters</strong></p>
+
+<p><strong>username</strong>: , username of the user</p>
+
+<p><strong>Returns</strong>: <code>*</code>, - Promise of users</p>
+
+<h3>
+<a id="adddocumentcollectionname-data" class="anchor" href="#adddocumentcollectionname-data" aria-hidden="true"><span class="octicon octicon-link"></span></a>addDocument(collectionName, data)</h3>
+
+<p>Create a new document</p>
+
+<p><strong>Parameters</strong></p>
+
+<p><strong>collectionName</strong>: , Which collection to add this document in</p>
+
+<p><strong>data</strong>: , Document Data</p>
+
+<p><strong>Returns</strong>: <code>*</code>, - Promise containing the saved document</p>
+
+<h3>
+<a id="getdocumentcollectionname-id" class="anchor" href="#getdocumentcollectionname-id" aria-hidden="true"><span class="octicon octicon-link"></span></a>getDocument(collectionName, id)</h3>
+
+<p>Get the document using the unique ID</p>
+
+<p><strong>Parameters</strong></p>
+
+<p><strong>collectionName</strong>: , The name of the collection</p>
+
+<p><strong>id</strong>: , Unique ID to get</p>
+
+<p><strong>Returns</strong>: <code>*</code>, - Promise containing the document</p>
+
+<h3>
+<a id="searchfordocumentscollectionname-query" class="anchor" href="#searchfordocumentscollectionname-query" aria-hidden="true"><span class="octicon octicon-link"></span></a>searchForDocuments(collectionName, query)</h3>
+
+<p>Search for documents, using some query.</p>
+
+<p><strong>Parameters</strong></p>
+
+<p><strong>collectionName</strong>: , The name of the collection</p>
+
+<p><strong>query</strong>: , the query to find the documents, for example:
+query = page=0&amp;recordsPerPage=1</p>
+
+<p><strong>Returns</strong>: <code>*</code>, - Promise containing documents</p>
+
+<h3>
+<a id="getdocumentcountcollectionname-query" class="anchor" href="#getdocumentcountcollectionname-query" aria-hidden="true"><span class="octicon octicon-link"></span></a>getDocumentCount(collectionName, query)</h3>
+
+<p>Returns the number of documents that the user can read in a collection</p>
+
+<p><strong>Parameters</strong></p>
+
+<p><strong>collectionName</strong>: , The name of the collection</p>
+
+<p><strong>query</strong>: , (Optional) The query to apply before returning the result</p>
+
+<p><strong>Returns</strong>: <code>*</code>, - Promise containing documents</p>
+
+<h3>
+<a id="updatedocumentcollectionname-id-data" class="anchor" href="#updatedocumentcollectionname-id-data" aria-hidden="true"><span class="octicon octicon-link"></span></a>updateDocument(collectionName, id, data)</h3>
+
+<p>Updates the document with the ID provided in the specified collection</p>
+
+<p><strong>Parameters</strong></p>
+
+<p><strong>collectionName</strong>: , The name of the collection</p>
+
+<p><strong>id</strong>: , The unique ID of the document</p>
+
+<p><strong>data</strong>: , The document data (replaces everything)</p>
+
+<p><strong>Returns</strong>: <code>*</code>, - Promise containing the document</p>
+
+<h3>
+<a id="updatedocumentfieldcollectionname-id-fieldname-data" class="anchor" href="#updatedocumentfieldcollectionname-id-fieldname-data" aria-hidden="true"><span class="octicon octicon-link"></span></a>updateDocumentField(collectionName, id, fieldname, data)</h3>
+
+<p>Updates a single field of an existing object. The field can be a simple property,
+a complex JSON object or even an array using the notation</p>
+
+<p><strong>Parameters</strong></p>
+
+<p><strong>collectionName</strong>: , The name of the collection</p>
+
+<p><strong>id</strong>: , The ID of the document</p>
+
+<p><strong>fieldname</strong>: , The name of the field that you want to update</p>
+
+<p><strong>data</strong>: , What to update to</p>
+
+<p><strong>Returns</strong>: <code>*</code>, - Promise containing the document</p>
+
+<h3>
+<a id="deletedocumentcollectionname-id" class="anchor" href="#deletedocumentcollectionname-id" aria-hidden="true"><span class="octicon octicon-link"></span></a>deleteDocument(collectionName, id)</h3>
+
+<p>Deletes the document with the ID specified in the collection provided as parameter</p>
+
+<p><strong>Parameters</strong></p>
+
+<p><strong>collectionName</strong>: , The name of the collection</p>
+
+<p><strong>id</strong>: , The ID of the document to delete</p>
+
+<p><strong>Returns</strong>: <code>*</code>, - Promise containing no returned data</p>
+
+<h3>
+<a id="grantpermissionbyusercollectionname-id-action-username" class="anchor" href="#grantpermissionbyusercollectionname-id-action-username" aria-hidden="true"><span class="octicon octicon-link"></span></a>grantPermissionByUser(collectionName, id, action, username)</h3>
+
+<p>Grants permission to the document to a single user</p>
+
+<p><strong>Parameters</strong></p>
+
+<p><strong>collectionName</strong>: , The name of the collection</p>
+
+<p><strong>id</strong>: , The ID of the document</p>
+
+<p><strong>action</strong>: , The grant you want to assign. One of: read, update, delete, all.</p>
+
+<p><strong>username</strong>: , The username of the user to whom you want to assign the grant</p>
+
+<p><strong>Returns</strong>: <code>*</code>, - Promise containing no returned data</p>
+
+<h3>
+<a id="grantpermissionbyrolecollectionname-id-action-role" class="anchor" href="#grantpermissionbyrolecollectionname-id-action-role" aria-hidden="true"><span class="octicon octicon-link"></span></a>grantPermissionByRole(collectionName, id, action, role)</h3>
+
+<p>Grants permission to the document to a single role</p>
+
+<p><strong>Parameters</strong></p>
+
+<p><strong>collectionName</strong>: , The name of the collection</p>
+
+<p><strong>id</strong>: , The ID of the document</p>
+
+<p><strong>action</strong>: , The grant you want to assign. One of: read, update, delete, all.</p>
+
+<p><strong>role</strong>: , The name of the role to whom you want to grant the permission
+One of: anonymous, registered, administrator, plus those defined by the administrator</p>
+
+<p><strong>Returns</strong>: <code>*</code>, - Promise containing no returned data</p>
+
+<h3>
+<a id="revokepermissionbyusercollectionname-id-action-username" class="anchor" href="#revokepermissionbyusercollectionname-id-action-username" aria-hidden="true"><span class="octicon octicon-link"></span></a>revokePermissionByUser(collectionName, id, action, username)</h3>
+
+<p>Revokes permission on a document to the user</p>
+
+<p><strong>Parameters</strong></p>
+
+<p><strong>collectionName</strong>: , The name of the collection</p>
+
+<p><strong>id</strong>: , The ID of the document</p>
+
+<p><strong>action</strong>: , The grant you want to revoke. One of: read, update, delete, all.</p>
+
+<p><strong>username</strong>: , The username of the user to whom you want to revoke the grant</p>
+
+<p><strong>Returns</strong>: <code>*</code>, - Promise containing no returned data</p>
+
+<h3>
+<a id="revokepermissionbyrolecollectionname-id-action-role" class="anchor" href="#revokepermissionbyrolecollectionname-id-action-role" aria-hidden="true"><span class="octicon octicon-link"></span></a>revokePermissionByRole(collectionName, id, action, role)</h3>
+
+<p>Revokes permission on a document to the role</p>
+
+<p><strong>Parameters</strong></p>
+
+<p><strong>collectionName</strong>: , The name of the collection</p>
+
+<p><strong>id</strong>: , The ID of the document</p>
+
+<p><strong>action</strong>: , The grant you want to revoke. One of: read, update, delete, all.</p>
+
+<p><strong>role</strong>: , The name of the role to whom you want to revoke the permission
+One of: anonymous, registered, administrator, plus those defined by the administrator</p>
+
+<p><strong>Returns</strong>: <code>*</code>, - Promise containing no returned data</p>
+
+<h3>
+<a id="createlinksourceid-destinationid-label" class="anchor" href="#createlinksourceid-destinationid-label" aria-hidden="true"><span class="octicon octicon-link"></span></a>createLink(sourceId, destinationId, label)</h3>
+
+<p>Links allow to connect documents and files to each other.
+To create a link you must provide the two documents you want to connect and the link name.
+Since links have a direction, the first document will be the source node of the link and
+the second one will be the destination node.</p>
+
+<p><strong>Parameters</strong></p>
+
+<p><strong>sourceId</strong>: , The ID of the first document or file to link</p>
+
+<p><strong>destinationId</strong>: , The ID of the second document or file to link</p>
+
+<p><strong>label</strong>: , The link name. Can be any valid string</p>
+
+<p><strong>Returns</strong>: <code>*</code>, - Promise containing non-writable fields about the link</p>
+
+<h3>
+<a id="getlinkbyidid" class="anchor" href="#getlinkbyidid" aria-hidden="true"><span class="octicon octicon-link"></span></a>getLinkById(id)</h3>
+
+<p>Get link by Id</p>
+
+<p><strong>Parameters</strong></p>
+
+<p><strong>id</strong>: , Id of the link</p>
+
+<p><strong>Returns</strong>: <code>*</code>, - Promise containing non-writable fields about the link</p>
+
+<h3>
+<a id="querylinkquery" class="anchor" href="#querylinkquery" aria-hidden="true"><span class="octicon octicon-link"></span></a>queryLink(query)</h3>
+
+<p>Get a single or multiple links using a query.</p>
+
+<p><strong>Parameters</strong></p>
+
+<p><strong>query</strong>: , the query.  For example:
+where=in.name.toLowerCase() like 'john%' and label="customer"</p>
+
+<p><strong>Returns</strong>: <code>*</code>, - Promise containing an array of links</p>
+
+<h3>
+<a id="deletelinkid" class="anchor" href="#deletelinkid" aria-hidden="true"><span class="octicon octicon-link"></span></a>deleteLink(id)</h3>
+
+<p>Deletes a link</p>
+
+<p><strong>Parameters</strong></p>
+
+<p><strong>id</strong>: , Id of the link</p>
+
+<p><strong>Returns</strong>: <code>*</code>, - Promise containg no data, just "ok" if success</p>
+
+<hr>
         </section>
 
         <aside id="sidebar">
