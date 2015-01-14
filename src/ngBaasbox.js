@@ -4,8 +4,7 @@ angular.module('ngBaasbox', [
 
 angular.module('ngBaasbox.api', [])
 
-.factory('$baasbox', ['$q',
-    function ($q) {
+    .factory('$baasbox', ['$q', '$http', function ($q, $http) {
 
         var BASEURL = "";
         var APPCODE = 1234567890;
@@ -27,11 +26,13 @@ angular.module('ngBaasbox.api', [])
             },
 
             /*======================================================*
-                USER
+             USER
              *======================================================*/
 
-            /*
-             *  user = {
+            /**
+             * Registers a new user
+             * @param user - A JSON object representing a user. Example:
+             * user = {
              *      username: "user",
              *      password: "pass",
              *      visibleByTheUser: {
@@ -47,15 +48,10 @@ angular.module('ngBaasbox.api', [])
              *      },
              *      visibleByAnonymousUsers: {}
              *  }
-             */
-
-            /**
-             * Registers a new user
-             * @param user - A JSON object representing a user.
              * @returns {*} A promise, with success containing the data (contains user, signUpDate, X-BB-SESSION).
              *
              */
-            signup: function (user) {
+            signup: function(user) {
                 var q = $q.defer();
                 Post_Json("user", makeNewUserData(user)).then(function (response) {
                     SESSION = response["X-BB-SESSION"];
@@ -72,17 +68,13 @@ angular.module('ngBaasbox.api', [])
              * @param password - the password
              * @returns {*} - A promise, with success containing the data (contains user, signUpDate, X-BB-SESSION).
              */
-            login: function (username, password) {
-                var passData = {
-                    username: username,
-                    password: password,
-                    appcode: APPCODE
-                };
+            login: function(username, password) {
+                var passData = {username: username, password: password, appcode: APPCODE};
                 var q = $q.defer();
-                Post_Encoded("login", passData).then(function (response) {
+                Post_Encoded("login", passData).then(function(response) {
                     SESSION = response["X-BB-SESSION"];
                     q.resolve(response);
-                }, function (response) {
+                }, function(response) {
                     console.log(response);
                     q.reject(response);
                 });
@@ -93,13 +85,13 @@ angular.module('ngBaasbox.api', [])
              * TODO: Implement the pushToken
              *
              * Logout the user from the server
-             * @returns {*} - Promise, which if a success, returns "user logged out"
+             * @returns {*} - Promise, which if a success, returns "ok"
              */
-            logout: function () {
+            logout: function() {
                 var q = $q.defer();
                 Post_Json("logout", "").then(function (response) {
                     SESSION = null;
-                    q.resolve(response);
+                    q.resolve("ok");
                 }, function (err) {
                     q.reject(err);
                 });
@@ -110,22 +102,19 @@ angular.module('ngBaasbox.api', [])
              * Retrieves details about the logged in user
              * @returns {*} - Promise with the user returned
              */
-            me: function () {
+            me: function() {
                 return Get("me", null, null);
             },
-
-            /*
-             { "visibleByTheUser": {}, "visibleByFriends": {}, "visibleByRegisteredUsers": {}, "visibleByAnonymousUsers": {} }
-             */
 
             /**
              * Updates the user profile.
              * @param user - Is of format: Should have 4 objects of the keys:
              *  visibleByTheUser, visibleByFriends, visibleByRegisteredUsers, visibleByAnonymousUsers,
-             *  where any of the 4, or all can be provided.
+             *  where any of the 4, or all can be provided:
+             *  { "visibleByTheUser": {}, "visibleByFriends": {}, "visibleByRegisteredUsers": {}, "visibleByAnonymousUsers": {} }
              * @returns {*} - Promise with the user returned
              */
-            updateProfile: function (user) {
+            updateProfile: function(user) {
                 return Put("me", updateCurrentToString(user), null)
             },
 
@@ -134,7 +123,7 @@ angular.module('ngBaasbox.api', [])
              * @param username - Who to fetch
              * @returns {*} - Promise with the user returned
              */
-            getSingleUser: function (username) {
+            getSingleUser: function(username) {
                 return Get("user", username, null);
             },
 
@@ -144,37 +133,37 @@ angular.module('ngBaasbox.api', [])
              * @param query - pagination and query criteria
              * @returns {*} - Promise with the users returned
              */
-            getAllUsers: function (query) {
+            getAllUsers: function(query) {
                 return Get("users", null, query);
             },
 
             // TODO: Implement
-            changePassword: function () {
+            changePassword: function() {
                 console.log("Not implemented yet.")
             },
 
             // TODO: Implement
-            forgotPassword: function () {
+            forgotPassword: function() {
                 console.log("Not implemented yet.")
             },
 
             // TODO: Implement
-            suspendUser: function () {
+            suspendUser: function() {
                 console.log("Not implemented yet.")
             },
 
             // TODO: Implement
-            activateUser: function () {
+            activateUser: function() {
                 console.log("Not implemented yet.")
             },
 
             // TODO: Implement
-            changeUsername: function () {
+            changeUsername: function() {
                 console.log("Not implemented yet.")
             },
 
             /*======================================================*
-                 FRIENDS
+             FRIENDS
              *======================================================*/
 
             /**
@@ -214,7 +203,7 @@ angular.module('ngBaasbox.api', [])
             },
 
             /*======================================================*
-                DOCUMENTS
+             DOCUMENTS
              *======================================================*/
 
             /**
@@ -223,9 +212,7 @@ angular.module('ngBaasbox.api', [])
              * @param data - Document Data
              * @returns {*} - Promise containing the saved document
              */
-            addDocument: function (collectionName, data) {
-                return Post_Json(getDocUrl(collectionName), data);
-            },
+            addDocument: function(collectionName, data) { return Post_Json(getDocUrl(collectionName), data); },
 
             /**
              * Get the document using the unique ID
@@ -233,9 +220,7 @@ angular.module('ngBaasbox.api', [])
              * @param id - Unique ID to get
              * @returns {*} - Promise containing the document
              */
-            getDocument: function (collectionName, id) {
-                return Get(getDocUrl(collectionName), id, null);
-            },
+            getDocument: function(collectionName, id) { return Get(getDocUrl(collectionName), id, null); },
 
             /**
              * Search for documents, using some query.
@@ -244,9 +229,7 @@ angular.module('ngBaasbox.api', [])
              *  query = page=0&recordsPerPage=1
              * @returns {*} - Promise containing documents
              */
-            searchForDocuments: function (collectionName, query) {
-                return Get(getDocUrl(collectionName), null, query);
-            },
+            searchForDocuments: function(collectionName, query) {return Get(getDocUrl(collectionName), null, query); },
 
             /**
              * Returns the number of documents that the user can read in a collection
@@ -254,9 +237,7 @@ angular.module('ngBaasbox.api', [])
              * @param query - (Optional) The query to apply before returning the result
              * @returns {*} - Promise containing documents
              */
-            getDocumentCount: function (collectionName, query) {
-                return Get(getDocUrl(collectionName), null, query);
-            },
+            getDocumentCount: function(collectionName, query) { return Get(getDocUrl(collectionName), null, query); },
 
             /**
              * Updates the document with the ID provided in the specified collection
@@ -265,9 +246,7 @@ angular.module('ngBaasbox.api', [])
              * @param data - The document data (replaces everything)
              * @returns {*} - Promise containing the document
              */
-            updateDocument: function (collectionName, id, data) {
-                return Put(getDocUrl(collectionName), data, id);
-            },
+            updateDocument: function(collectionName, id, data) { return Put(getDocUrl(collectionName), data, id); },
 
             /**
              * Updates a single field of an existing object. The field can be a simple property,
@@ -279,9 +258,7 @@ angular.module('ngBaasbox.api', [])
              * @returns {*} - Promise containing the document
              */
             updateDocumentField: function (collectionName, id, fieldname, data) {
-                return Put(getDocUrl(collectionName), {
-                    data: data
-                }, id + "/." + fieldname);
+                return Put(getDocUrl(collectionName), {data:data}, id + "/." + fieldname);
             },
 
             /**
@@ -290,9 +267,7 @@ angular.module('ngBaasbox.api', [])
              * @param id - The ID of the document to delete
              * @returns {*} - Promise containing no returned data
              */
-            deleteDocument: function (collectionName, id) {
-                return Delete(getDocUrl(collectionName), id);
-            },
+            deleteDocument: function (collectionName, id) { return Delete(getDocUrl(collectionName), id); },
 
             /**
              * Grants permission to the document to a single user
@@ -302,7 +277,7 @@ angular.module('ngBaasbox.api', [])
              * @param username - The username of the user to whom you want to assign the grant
              * @returns {*} - Promise containing no returned data
              */
-            grantPermissionByUser: function (collectionName, id, action, username) {
+            grantPermissionByUser: function(collectionName, id, action, username) {
                 var url = getDocUrl(collectionName) + "/" + id + "/" + action + "/user/" + username;
                 return Put(url, {}, null);
             },
@@ -316,7 +291,7 @@ angular.module('ngBaasbox.api', [])
              *  One of: anonymous, registered, administrator, plus those defined by the administrator
              * @returns {*} - Promise containing no returned data
              */
-            grantPermissionByRole: function (collectionName, id, action, role) {
+            grantPermissionByRole: function(collectionName, id, action, role) {
                 var url = getDocUrl(collectionName) + "/" + id + "/" + action + "/role/" + role;
                 return Put(url, {}, null);
             },
@@ -329,7 +304,7 @@ angular.module('ngBaasbox.api', [])
              * @param username - The username of the user to whom you want to revoke the grant
              * @returns {*} - Promise containing no returned data
              */
-            revokePermissionByUser: function (collectionName, id, action, username) {
+            revokePermissionByUser: function(collectionName, id, action, username) {
                 var url = getDocUrl(collectionName) + "/" + id + "/" + action + "/role";
                 return Delete(url, username);
             },
@@ -343,13 +318,13 @@ angular.module('ngBaasbox.api', [])
              *  One of: anonymous, registered, administrator, plus those defined by the administrator
              * @returns {*} - Promise containing no returned data
              */
-            revokePermissionByRole: function (collectionName, id, action, role) {
+            revokePermissionByRole: function(collectionName, id, action, role) {
                 var url = getDocUrl(collectionName) + "/" + id + "/" + action + "/role";
                 return Delete(url, role);
             },
 
             /*======================================================*
-                 LINKS
+             LINKS
              *======================================================*/
 
             /**
@@ -362,7 +337,7 @@ angular.module('ngBaasbox.api', [])
              * @param label - The link name. Can be any valid string
              * @returns {*} - Promise containing non-writable fields about the link
              */
-            createLink: function (sourceId, destinationId, label) {
+            createLink: function(sourceId, destinationId, label) {
                 return Post_Json("link/" + sourceId + "/" + label + "/" + destinationId, {})
             },
 
@@ -371,7 +346,7 @@ angular.module('ngBaasbox.api', [])
              * @param id - Id of the link
              * @returns {*} - Promise containing non-writable fields about the link
              */
-            getLinkById: function (id) {
+            getLinkById: function(id) {
                 return Get("link", id, null);
             },
 
@@ -381,7 +356,7 @@ angular.module('ngBaasbox.api', [])
              *  where=in.name.toLowerCase() like 'john%' and label="customer"
              * @returns {*}- Promise containing an array of links
              */
-            queryLink: function (query) {
+            queryLink: function(query) {
                 return Get("link", null, query);
             },
 
@@ -390,7 +365,7 @@ angular.module('ngBaasbox.api', [])
              * @param id - Id of the link
              * @returns {*} - Promise containg no data, just "ok" if success
              */
-            deleteLink: function (id) {
+            deleteLink: function(id) {
                 return Delete("link", id);
             }
 
@@ -400,7 +375,7 @@ angular.module('ngBaasbox.api', [])
 
 
         /*======================================================*
-            HELPER FUNCTIONS - HTTP CALLS
+         HELPER FUNCTIONS - HTTP CALLS
          *======================================================*/
 
         /**
@@ -411,13 +386,8 @@ angular.module('ngBaasbox.api', [])
          */
         function Post_Json(url, data) {
             var q = $q.defer();
-            var HEADER = {
-                headers: {
-                    'X-BAASBOX-APPCODE': APPCODE,
-                    'X-BB-SESSION': SESSION
-                }
-            }
-            $http.post(BASEURL + url, data, HEADER).then(function (response) { // Success
+            var HEADER = { headers: {'X-BAASBOX-APPCODE': APPCODE, 'X-BB-SESSION': SESSION} }
+            $http.post(BASEURL + "/" + url, data, HEADER).then(function (response) { // Success
                 q.resolve(response.data.data);
             }, function (response) {
                 console.log(response);
@@ -434,27 +404,28 @@ angular.module('ngBaasbox.api', [])
          * @returns {*} - A promise, with success containing the response data (not the code, the actual data)
          */
         function Post_Encoded(url, data) {
-            var deferred = $q.defer();
+            var q = $q.defer();
             $http({
                 method: 'POST',
-                url: BASEURL + url,
+                url: BASEURL + "/" + url,
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded'
                 },
-                transformRequest: function (obj) {
+                transformRequest: function(obj) {
                     var str = [];
-                    for (var p in obj)
+                    for(var p in obj)
                         str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
                     return str.join("&");
                 },
                 data: data
-            }).then(function (response) {
-                deferred.resolve(response.data.data);
-            }, function (response) {
-                console.log(response);
-                deferred.reject(response);
-            });
-            return deferred.promise;
+            })
+                .then(function(response) {
+                    q.resolve(response.data.data);
+                }, function(response) {
+                    console.log(response);
+                    q.reject(response);
+                });
+            return q.promise;
         }
 
         /**
@@ -466,13 +437,8 @@ angular.module('ngBaasbox.api', [])
          */
         function Get(url, arg, query) {
             var q = $q.defer();
-            var HEADER = {
-                headers: {
-                    'X-BAASBOX-APPCODE': APPCODE,
-                    'X-BB-SESSION': SESSION
-                }
-            };
-            var finalUrl = arg ? BASEURL + url + "/" + arg : BASEURL + url;
+            var HEADER = { headers: {'X-BAASBOX-APPCODE': APPCODE, 'X-BB-SESSION': SESSION} };
+            var finalUrl = arg ? BASEURL + "/" + url + "/" + arg : BASEURL +  "/" + url;
             if (query) finalUrl += "?" + encodeURIComponent(query);
             $http.get(finalUrl, HEADER).then(function (response) { // Success
                 q.resolve(response.data.data);
@@ -491,13 +457,8 @@ angular.module('ngBaasbox.api', [])
          */
         function Put(url, data, arg) {
             var q = $q.defer();
-            var HEADER = {
-                headers: {
-                    'X-BAASBOX-APPCODE': APPCODE,
-                    'X-BB-SESSION': SESSION
-                }
-            };
-            var finalUrl = arg ? BASEURL + url + "/" + arg : BASEURL + url;
+            var HEADER = { headers: {'X-BAASBOX-APPCODE': APPCODE, 'X-BB-SESSION': SESSION} };
+            var finalUrl = arg ? BASEURL + "/" + url + "/" + arg : BASEURL + "/" + url;
             $http.put(finalUrl, data, HEADER).then(function (response) { // Success
                 q.resolve(response.data.data);
             }, function (response) {
@@ -515,13 +476,8 @@ angular.module('ngBaasbox.api', [])
          */
         function Delete(url, id) {
             var q = $q.defer();
-            var HEADER = {
-                headers: {
-                    'X-BAASBOX-APPCODE': APPCODE,
-                    'X-BB-SESSION': SESSION
-                }
-            };
-            $http.put(url + "/" + id, HEADER).then(function (response) {
+            var HEADER = { headers: {'X-BAASBOX-APPCODE': APPCODE, 'X-BB-SESSION': SESSION} };
+            $http.put(BASEURL + "/" + url + "/" + id, HEADER).then(function (response) {
                 q.resolve("Deleted.");
             }, function (response) {
                 console.log(response);
@@ -531,7 +487,7 @@ angular.module('ngBaasbox.api', [])
         }
 
         /*======================================================*
-            HELPER FUNCTIONS - USER
+         HELPER FUNCTIONS - USER
          *======================================================*/
 
         /**
@@ -565,7 +521,7 @@ angular.module('ngBaasbox.api', [])
         }
 
         /*======================================================*
-            HELPER FUNCTIONS - DOCUMENTS
+         HELPER FUNCTIONS - DOCUMENTS
          *======================================================*/
 
         /**
@@ -577,4 +533,4 @@ angular.module('ngBaasbox.api', [])
             return "document/" + collectionName;
         }
 
-}]);
+    }]);
