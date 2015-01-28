@@ -7,16 +7,24 @@ angular.module('ngBaasbox.api', [])
     .factory('$baasbox', ['$q', '$http', function ($q, $http) {
 
         var BASEURL = "", APPCODE = 1234567890, SESSION = null, IOS_PUSH_TOKEN = null, ANDROID_PUSH_TOKEN = null,
-            IOS_SOCIAL_TOKEN = null, ANDROID_SOCIAL_TOKEN = null, IOS_SOCIAL_SECRET = null, ANDROID_SOCIAL_SECRET = null;
+            FACEBOOK_SOCIAL_TOKEN = null, GOOGLE_SOCIAL_TOKEN = null, FACEBOOK_SOCIAL_SECRET = null, GOOGLE_SOCIAL_SECRET = null;
 
         return {
 
             /**
-             * Initialize baasbox
-             * @param url - Where all api call will be made. This is the base URL with the slash after the url included.
-             *  As an example: www.myServer.com/ or 192.168.1.1:800/
-             * @param appcode - The application code you first ran the application with. The default is 1234567890
-             * @param session - The session code if it exists.
+             * Initialize baasbox. Options (an object)
+             * @param options - An object, containing the following:
+             *  url - Where all api call will be made. This is the base URL with the slash after the url included.
+             *      As an example: www.myServer.com/ or 192.168.1.1:800/
+             *  appCode - The application code you first ran the application with. The default is 1234567890.
+             *  session - The session got after logging in (X-BB-SESSION). Default is null.
+             *  iOSPushToken - The push notification token code for ios.
+             *  androidPushToken - The push notification token code for android.
+             *  facebookSocialToken - The social token for facebook.
+             *  facebookSocialSecret - The social secret for facebook.
+             *  googleSocialToken - The social token for google.
+             *  googleSocialSecret - The social secret for google.
+             *
              */
             init: function (options) {
                 if (!options || !options.url) {
@@ -28,10 +36,10 @@ angular.module('ngBaasbox.api', [])
                 SESSION = options.session;
                 IOS_PUSH_TOKEN = options.iOSPushToken;
                 ANDROID_PUSH_TOKEN = options.androidPushToken;
-                IOS_SOCIAL_TOKEN = options.iOSSocialToken;
-                ANDROID_SOCIAL_TOKEN = options.androidSocialToken;
-                IOS_SOCIAL_SECRET = options.iOSSocialSecret;
-                ANDROID_SOCIAL_SECRET = options.androidSocialSecret;
+                FACEBOOK_SOCIAL_TOKEN = options.facebookSocialToken;
+                FACEBOOK_SOCIAL_SECRET = options.facebookSocialSecret;
+                GOOGLE_SOCIAL_TOKEN = options.googleSocialToken;
+                GOOGLE_SOCIAL_SECRET = options.googleSocialSecret;
                 return true;
             },
 
