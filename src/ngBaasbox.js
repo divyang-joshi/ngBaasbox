@@ -479,6 +479,45 @@ angular.module('ngBaasbox.api', [])
              */
             unlinkFromFacebook: function () {
                 return Delete('social/facebook', null);
+            },
+
+            /*======================================================*
+             PUSH NOTIFICATIONS
+             *======================================================*/
+
+            /**
+             * Enables a specific user (logged using an ios device) to receive push notifications.
+             * @returns {*} - Promise, containing nothing if success
+             */
+            enablePushForIOS: function () {
+                return Put('push/enable/ios', null, IOS_PUSH_TOKEN);
+            },
+
+            /**
+             * Enables a specific user (logged using an android device) to receive push notifications.
+             * @returns {*} - Promise, containing nothing if success
+             */
+            enablePushForAndroid: function () {
+                return Put('push/enable/android', null, ANDROID_PUSH_TOKEN);
+            },
+
+            /**
+             * Disable a specific user (logged using a specific device) to unreceive push notifications.
+             * @returns {*} - Promise, containing nothing if success
+             */
+            disablePushNotifications: function () {
+                return Put('push/disable', null, IOS_PUSH_TOKEN);
+            },
+
+            /**
+             * Allows to send a push notification. This will be sent to every device,
+             * registered with the respective app, on which users have enabled push notifications.
+             * @param messageObject - A JSON object containing required the message, users, and others listed at:
+             *  http://www.baasbox.com/documentation/#send-a-push-notification for all requirements
+             * @returns {*}
+             */
+            sendPushNotification: function (messageObject) {
+                return Post_Json("push/message", message);
             }
 
 
