@@ -29,10 +29,8 @@ angular.module('ngBaasbox.api', [])
              USER
              *======================================================*/
 
-            /**
-             * Registers a new user
-             * @param user - A JSON object representing a user. Example:
-             * user = {
+            /*
+             *  user = {
              *      username: "user",
              *      password: "pass",
              *      visibleByTheUser: {
@@ -48,6 +46,11 @@ angular.module('ngBaasbox.api', [])
              *      },
              *      visibleByAnonymousUsers: {}
              *  }
+             */
+
+            /**
+             * Registers a new user
+             * @param user - A JSON object representing a user.
              * @returns {*} A promise, with success containing the data (contains user, signUpDate, X-BB-SESSION).
              *
              */
@@ -106,12 +109,15 @@ angular.module('ngBaasbox.api', [])
                 return Get("me", null, null);
             },
 
+            /*
+             { "visibleByTheUser": {}, "visibleByFriends": {}, "visibleByRegisteredUsers": {}, "visibleByAnonymousUsers": {} }
+             */
+
             /**
              * Updates the user profile.
              * @param user - Is of format: Should have 4 objects of the keys:
              *  visibleByTheUser, visibleByFriends, visibleByRegisteredUsers, visibleByAnonymousUsers,
-             *  where any of the 4, or all can be provided:
-             *  { "visibleByTheUser": {}, "visibleByFriends": {}, "visibleByRegisteredUsers": {}, "visibleByAnonymousUsers": {} }
+             *  where any of the 4, or all can be provided.
              * @returns {*} - Promise with the user returned
              */
             updateProfile: function(user) {
@@ -403,7 +409,7 @@ angular.module('ngBaasbox.api', [])
          * @param data - Data the pass as a JSON object, e.g object name:"test",age:21
          * @returns {*} - A promise, with success containing the response data (not the code, the actual data)
          */
-        function Post_Encoded(url, data) {
+        function Post_Encoded(url, dataIn) {
             var q = $q.defer();
             $http({
                 method: 'POST',
@@ -417,7 +423,7 @@ angular.module('ngBaasbox.api', [])
                         str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
                     return str.join("&");
                 },
-                data: data
+                data: dataIn
             })
                 .then(function(response) {
                     q.resolve(response.data.data);
@@ -457,6 +463,7 @@ angular.module('ngBaasbox.api', [])
          */
         function Put(url, data, arg) {
             var q = $q.defer();
+            var respond;
             var HEADER = { headers: {'X-BAASBOX-APPCODE': APPCODE, 'X-BB-SESSION': SESSION} };
             var finalUrl = arg ? BASEURL + "/" + url + "/" + arg : BASEURL + "/" + url;
             $http.put(finalUrl, data, HEADER).then(function (response) { // Success
@@ -477,7 +484,7 @@ angular.module('ngBaasbox.api', [])
         function Delete(url, id) {
             var q = $q.defer();
             var HEADER = { headers: {'X-BAASBOX-APPCODE': APPCODE, 'X-BB-SESSION': SESSION} };
-            $http.put(BASEURL + "/" + url + "/" + id, HEADER).then(function (response) {
+            $http.delete(BASEURL + "/" + url + "/" + id, HEADER).then(function (response) {
                 q.resolve("Deleted.");
             }, function (response) {
                 console.log(response);
