@@ -518,6 +518,74 @@ angular.module('ngBaasbox.api', [])
              */
             sendPushNotification: function (messageObject) {
                 return Post_Json("push/message", message);
+            },
+
+            /*======================================================*
+             FILES & ASSETS
+             - Files/Assets related APIs will be in a separate file.
+             - Multiple versions containing multiple types
+             *======================================================*/
+
+            /*======================================================*
+             ADMIN APIs
+             - Need to move into another file to keep final minimal.
+             - Also allows to have custom builds that way.
+             *======================================================*/
+
+            /**
+             * Returns a JSON representing the current configuration
+             * @returns {*} - Promise containing the JSON dump
+             */
+            adminGetCurrentSettings: function() {
+                return Get("admin/configuration", "dump.json", null);
+            },
+
+            adminGetPassRecoverySettings: function() {
+                return Get("admin/configuration", "PasswordRecovery", null);
+            },
+
+            adminGetApplicationSettings: function() {
+                return Get("admin/configuration", "Application", null);
+            },
+
+            adminGetPushSettings: function() {
+                return Get("admin/configuration", "Push", null);
+            },
+
+            adminGetImagesSettings: function() {
+                return Get("admin/configuration", "Images", null);
+            },
+
+            adminUpdatePassRecoverySetting: function(key, value) {
+                return Put("admin/configuration/PasswordRecovery", null, key + "/" + value);
+            },
+
+            adminUpdateApplicationSetting: function(key, value) {
+                return Put("admin/configuration/Application", null, key + "/" + value);
+            },
+
+            adminUpdatePushSetting: function(key, value) {
+                return Put("admin/configuration/Push", null, key + "/" + value);
+            },
+
+            adminUpdateImagesSetting: function(key, value) {
+                return Put("admin/configuration/Images", null, key + "/" + value);
+            },
+
+            adminGetEndPoints: function() {
+                return Get("admin/endpoints", null, null);
+            },
+
+            adminGetSingleEndPoint: function(groupName) {
+                return Get("admin/endpoints", groupName, null);
+            },
+
+            adminEnableEndPoint: function(groupName) {
+                return Put("admin/endpoints/" + groupName + "/enabled", null, null);
+            },
+
+            adminDisableEndPoint: function(groupName) {
+                return Delete("admin/endpoints/" + groupName + "/enabled", null);
             }
 
 
