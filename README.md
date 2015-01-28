@@ -1,12 +1,19 @@
 # ngBaasbox
 
-An angular wrapper for Baasbox
+An angular wrapper for Baasbox. Support for version 0.9.0 so far.
+
+Notes: 
+1. The documentation is incomplete. 
+2. All results are promises. (Other than init)
+3. Files and Assets are not yet implemented
+4. There are functions in the SDK that are incomplete. Anything with TODO in its comments is incomplete/may not work as desired.
+5. How you store the login session/result is left to you. This could change in the future :)
 
 ## Documentation - Summary
 ### Public Functions - User Related
 | Function | Description |
 |---|---|
-|init(url, appcode, session)|Initialize baasbox. Needed to use this plugin|
+|init(options)|Initialize baasbox. Needed to use this plugin|
 |signup(user)|Registers a new user|
 |login(username, password)|Login a user|
 |logout()|Logout the user from the server|
@@ -40,27 +47,40 @@ An angular wrapper for Baasbox
 
 ## Documentation - Detailes & Examples
 
-### init(url, appcode, session) 
+### init(options) 
 
 Initialize baasbox
 
 **Parameters**
 
-**url**: , Where all api call will be made. This is the base URL with the slash after the url included.
-As an example: www.myServer.com/ or 192.168.1.1:800/
+**options**: An object, containing the following:
 
-**appcode**: , The application code you first ran the application with. The default is 1234567890
-
-**session**: , The session code if it exists.
+- *url* - Where all api call will be made. This is the base URL with the slash after the url included. As an example: www.myServer.com/ or 192.168.1.1:800/ 
+- *appCode* - The application code you first ran the application with. The default is 1234567890.
+- *session* - The session got after logging in (X-BB-SESSION). Default is null.
+- *iOSPushToken* - The push notification token code for ios.
+- *androidPushToken* - The push notification token code for android.
+- *facebookSocialToken* - The social token for facebook.
+- *facebookSocialSecret* - The social secret for facebook.
+- *googleSocialToken* - The social token for google.
+- *googleSocialSecret* - The social secret for google.
 
 **example**:
 ```
-// In case you store the session somewhere. For example on cellphone apps.
-$baasbox.init("http://localhost:9000", 1234567890, User.getSession());
+// In case you store the session somewhere. For example to localStorage.
+$baasbox.init({
+    url: "http://localhost:9000",
+    appCode: 1234567890,
+    session: User.getSession()
+});
+
 OR
 // In case you aren't storing the session. Refreshing the broswer will
 // destroy the session inside $baasbox, so be sure store that somewhere.
-$baasbox.init("http://localhost:9000", 1234567890, null);
+$baasbox.init({
+    url: "http://localhost:9000",
+    appCode: 1234567890
+});
 ```
 
 ### `signup(user)` 
@@ -456,3 +476,5 @@ Deletes a link
 **id**: , Id of the link
 
 **Returns**: `*`, - Promise containg no data, just "ok" if success
+
+* * *

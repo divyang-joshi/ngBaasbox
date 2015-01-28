@@ -1,3 +1,8 @@
+/******************************************************************
+    An AngularJS library for Baasbox (http://www.baasbox.com).
+    Baasbox version 0.9.0
+ ******************************************************************/
+
 angular.module('ngBaasbox', [
     'ngBaasbox.api'
 ]);
@@ -540,50 +545,116 @@ angular.module('ngBaasbox.api', [])
                 return Get("admin/configuration", "dump.json", null);
             },
 
+            /**
+             * Returns a JSON representing a section of the password recovery configuration
+             * @returns {*} - A promise containing the JSON object
+             */
             adminGetPassRecoverySettings: function() {
                 return Get("admin/configuration", "PasswordRecovery", null);
             },
 
+            /**
+             * Returns a JSON representing a section of the application configuration
+             * @returns {*} - A promise containing the JSON object
+             */
             adminGetApplicationSettings: function() {
                 return Get("admin/configuration", "Application", null);
             },
 
+            /**
+             * Returns a JSON representing a section of the push notifications configuration
+             * @returns {*} - A promise containing the JSON object
+             */
             adminGetPushSettings: function() {
                 return Get("admin/configuration", "Push", null);
             },
 
+            /**
+             * Returns a JSON representing a section of the images configuration
+             * @returns {*} - A promise containing the JSON object
+             */
             adminGetImagesSettings: function() {
                 return Get("admin/configuration", "Images", null);
             },
 
+            /**
+             * Updates a specific value in the password recovery settings.
+             * @param key - The key whose value to update
+             * @param value - The value
+             * @returns {*} - A promise containing nothing on success
+             */
             adminUpdatePassRecoverySetting: function(key, value) {
                 return Put("admin/configuration/PasswordRecovery", null, key + "/" + value);
             },
 
+            /**
+             * Updates a specific value in the application settings.
+             * @param key - The key whose value to update
+             * @param value - The value
+             * @returns {*} - A promise containing nothing on success
+             */
             adminUpdateApplicationSetting: function(key, value) {
                 return Put("admin/configuration/Application", null, key + "/" + value);
             },
 
+            /**
+             * Updates a specific value in the push notifications settings.
+             * @param key - The key whose value to update
+             * @param value - The value
+             * @returns {*} - A promise containing nothing on success
+             */
             adminUpdatePushSetting: function(key, value) {
                 return Put("admin/configuration/Push", null, key + "/" + value);
             },
 
+            /**
+             * Updates a specific value in the images settings.
+             * @param key - The key whose value to update
+             * @param value - The value
+             * @returns {*} - A promise containing nothing on success
+             */
             adminUpdateImagesSetting: function(key, value) {
                 return Put("admin/configuration/Images", null, key + "/" + value);
             },
 
+            /**
+             * Get the predefined groups are all prefixed with 'baasbox.',
+             * and cover all the endpoints except for the administrative ones that cannot be turned off.
+             * The list of all endpoints is at:
+             *  http://www.baasbox.com/documentation/#enable-an-endpoint-group
+             * @returns {*} - A promise containing a list of details about all the endpoints
+             */
             adminGetEndPoints: function() {
                 return Get("admin/endpoints", null, null);
             },
 
+            /**
+             * Returns details about a group. Useful to know if a specific group of APIs is enabled or not.
+             * @param groupName - The name of the group of endpoints. The list of all endpoints is at:
+             *  http://www.baasbox.com/documentation/#enable-an-endpoint-group
+             * @returns {*} - A promise containing details about the endpoint
+             */
             adminGetSingleEndPoint: function(groupName) {
                 return Get("admin/endpoints", groupName, null);
             },
 
+            /**
+             * Enable a group of endpoints
+             * @param groupName - The name of the group of endpoints. The list of all endpoints is at:
+             *  http://www.baasbox.com/documentation/#enable-an-endpoint-group
+             * @returns {*} - A promise containing nothing on success
+             */
             adminEnableEndPoint: function(groupName) {
                 return Put("admin/endpoints/" + groupName + "/enabled", null, null);
             },
 
+            /**
+             * TODO: Handle these 403 errors
+             * Disables a group of endpoints. Calls to endpoints belonging to this group will return an error 403.
+             * @param groupName - The name of the group of endpoints. The list of all endpoints is at:
+             *  http://www.baasbox.com/documentation/#enable-an-endpoint-group
+             * @returns {*} - A promise containing nothing on success
+             */
             adminDisableEndPoint: function(groupName) {
                 return Delete("admin/endpoints/" + groupName + "/enabled", null);
             }
