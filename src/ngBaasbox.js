@@ -48,6 +48,56 @@ angular.module('ngBaasbox.api', [])
                 return true;
             },
 
+            //url, type, data, dataAsJson, headers, session
+            /**
+             * Make a custom call. As an example, if there is a new feature implemented
+             * by baasbox, you can use this function instead of waiting for the sdk to update.
+             * @param options - What you need to make the call:
+             *  - url (required) : the link to the api, excluding the base url. api/admin/new.
+             *  - method (required) : What call this is, eg 'PUT', 'POST', 'GET', 'DELETE' or anything else.
+             *  - data (optional, default: {}) : Data to pass. Needs to be in a JSON format.
+             *  - dataAsJson (optional, default: true) : Will the data be passed as a json or not. Example:
+             *      true: -d "{"username" : "cesare", "password" : "password"}"
+             *      false --> -d "username=cesare" -d "password=password" (app code will be attached, header wont)
+             *  - headers (optional) : Attach additional headers.
+             *      Note: Default header will be Content-type:application/json. So be sure to use appropriate headers
+             *  - session (optional, default : value from init):
+             * @returns {*} - Returns a promise of the response. Note: Does not return only data, rather everything including
+             *  the response code, etc.
+             */
+            customCall: function(options) {
+
+                var setup = {
+                    method: options["type"],
+                    url: BASEURL + "/" + options["url"],
+                    headers: options["headers"] ? options["headers"] : {},
+                    data: options["data"] ? options["data"] : {}
+                };
+
+                setup.headers["X-BB-SESSION"] = SESSION ? SESSION : options["session"];
+
+
+                if (!options["dataAsJson"]) {
+                    setup["transformRequest"] = function (obj) {
+                        var str = [];
+                        for (var p in obj)
+                            str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+                        return str.join("&");
+                    };
+                    setup.data["appcode"] = APPCODE;
+                }
+
+                var q = $q.defer();
+                $http(setup)
+                    .then(function (response) {
+                        q.resolve(response);
+                    }, function (response) {
+                        console.log(response);
+                        q.reject(response);
+                    });
+                return q.promise;
+            },
+
             /*======================================================*
              USER
              *======================================================*/
@@ -166,9 +216,15 @@ angular.module('ngBaasbox.api', [])
                 return Get("users", null, query);
             },
 
-            // TODO: Implement
-            changePassword: function () {
-                console.log("Not implemented yet.")
+            /**
+             * To change the password of the logged in user.
+             * After you call this API the authentication token is not valid anymore and should call login again.
+             * @param oldPassword (required) - The old password
+             * @param newPassword (required) - The new password
+             * @returns {*} - Promise containing nothing if success.
+             */
+            changePassword: function (oldPassword, newPassword) {
+                return Put("me/password", {old:oldPassword, new:newPassword}, null);
             },
 
             // TODO: Implement
