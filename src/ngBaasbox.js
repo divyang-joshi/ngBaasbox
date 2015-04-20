@@ -1,6 +1,6 @@
 /******************************************************************
-    An AngularJS library for Baasbox (http://www.baasbox.com).
-    Baasbox version 0.9.0
+ An AngularJS library for Baasbox (http://www.baasbox.com).
+ Baasbox version 0.9.0
  ******************************************************************/
 
 angular.module('ngBaasbox', [
@@ -9,7 +9,7 @@ angular.module('ngBaasbox', [
 
 angular.module('ngBaasbox.api', [])
 
-    .factory('$baasbox', ['$q', '$http', function ($q, $http) {
+    .factory('$baasbox', ['$q', '$http', '$timeout', function ($q, $http, $timeout) {
 
         var BASEURL = "", APPCODE = 1234567890, SESSION = null, IOS_PUSH_TOKEN = null, ANDROID_PUSH_TOKEN = null,
             FACEBOOK_SOCIAL_TOKEN = null, GOOGLE_SOCIAL_TOKEN = null, FACEBOOK_SOCIAL_SECRET = null, GOOGLE_SOCIAL_SECRET = null;
@@ -75,9 +75,11 @@ angular.module('ngBaasbox.api', [])
                 };
 
                 setup.headers["X-BB-SESSION"] = SESSION ? SESSION : options["session"];
+                setup.headers["X-BAASBOX-APPCODE"] = APPCODE ? APPCODE : options["appcode"];
 
 
                 if (!options["dataAsJson"]) {
+                    console.log("Doing transform");
                     setup["transformRequest"] = function (obj) {
                         var str = [];
                         for (var p in obj)
@@ -85,17 +87,27 @@ angular.module('ngBaasbox.api', [])
                         return str.join("&");
                     };
                     setup.data["appcode"] = APPCODE;
+                } else {
+                    setup.headers["Content-type"] = "application/json";
                 }
 
                 var q = $q.defer();
-                $http(setup)
-                    .then(function (response) {
-                        q.resolve(response);
-                    }, function (response) {
-                        console.log(response);
-                        q.reject(response);
-                    });
+                $http(setup).then(function (response) {
+                    console.log("Custom call success. Response: ");
+                    console.log(response);
+                    q.resolve(response);
+                }, function (response) {
+                    q.reject(response);
+                });
                 return q.promise;
+            },
+
+            getSession: function() {
+                return {headers: {'X-BAASBOX-APPCODE': APPCODE, 'X-BB-SESSION': SESSION}}
+            },
+
+            pluginCall: function() {
+
             },
 
             /*======================================================*
@@ -165,11 +177,26 @@ angular.module('ngBaasbox.api', [])
              */
             logout: function () {
                 var q = $q.defer();
-                Post_Json("logout", "").then(function (response) {
+                Post_Json("logout", {}).then(function (response) {
                     SESSION = null;
                     q.resolve("ok");
                 }, function (err) {
                     q.reject(err);
+                });
+                return q.promise;
+            },
+
+            /**
+             * TODO: Implement the pushToken
+             *
+             * Destroy the user from local
+             * @returns {*} - Promise, which if a success, returns "ok"
+             */
+            localLogout: function () {
+                var q = $q.defer();
+                $timeout(function () {
+                    SESSION = null;
+                    q.resolve("ok");
                 });
                 return q.promise;
             },
@@ -275,6 +302,7 @@ angular.module('ngBaasbox.api', [])
              * @returns {*} - Promise of users
              */
             fetchFollowing: function (username) {
+
                 return Get("following", username, null);
             },
 
@@ -402,7 +430,7 @@ angular.module('ngBaasbox.api', [])
              * @returns {*} - Promise containing no returned data
              */
             revokePermissionByUser: function (collectionName, id, action, username) {
-                var url = getDocUrl(collectionName) + "/" + id + "/" + action + "/role";
+                var url = getDocUrl(collectionName) + "/" + id + "/" + action + "/user";
                 return Delete(url, username);
             },
 
@@ -586,6 +614,10 @@ angular.module('ngBaasbox.api', [])
              - Files/Assets related APIs will be in a separate file.
              - Multiple versions containing multiple types
              *======================================================*/
+
+            deleteFile: function (id) {
+                return Delete("file", id);
+            },
 
             /*======================================================*
              ADMIN APIs
@@ -784,7 +816,7 @@ angular.module('ngBaasbox.api', [])
             var q = $q.defer();
             var HEADER = {headers: {'X-BAASBOX-APPCODE': APPCODE, 'X-BB-SESSION': SESSION}};
             var finalUrl = arg ? BASEURL + "/" + url + "/" + arg : BASEURL + "/" + url;
-            if (query) finalUrl += "?" + encodeURIComponent(query);
+            if (query) finalUrl += "?" + query;
             $http.get(finalUrl, HEADER).then(function (response) { // Success
                 q.resolve(response.data.data);
             }, function (response) {
@@ -801,10 +833,19 @@ angular.module('ngBaasbox.api', [])
          * @returns {*} - A promise, with success containing the response data (not the code, the actual data)
          */
         function Put(url, data, arg) {
+            console.log("IN BAASBOX");
+            console.log(url);
+            console.log(data);
+            console.log(arg);
+            console.log("IN BAASBOX END");
             var q = $q.defer();
             var HEADER = {headers: {'X-BAASBOX-APPCODE': APPCODE, 'X-BB-SESSION': SESSION}};
             var finalUrl = arg ? BASEURL + "/" + url + "/" + arg : BASEURL + "/" + url;
+            console.log("IN FINAL URL");
+            console.log(finalUrl);
             $http.put(finalUrl, data ? data : {}, HEADER).then(function (response) { // Success
+                console.log("REPONSE");
+                console.log(response);
                 q.resolve(response.data.data);
             }, function (response) {
                 console.log(response);
