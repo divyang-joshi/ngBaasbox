@@ -1,5 +1,7 @@
 # ngBaasbox
 
+## Note: Haven't worked on this for a while, so if someone is brave enough, feel free to take over :)
+
 An angular wrapper for Baasbox. Support for version 0.9.0 so far.
 
 Notes: 
