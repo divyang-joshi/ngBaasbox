@@ -765,9 +765,8 @@ angular.module('ngBaasbox.api', [])
             var q = $q.defer();
             var HEADER = {headers: {'X-BAASBOX-APPCODE': APPCODE, 'X-BB-SESSION': SESSION}}
             $http.post(BASEURL + "/" + url, data, HEADER).then(function (response) { // Success
-                q.resolve(response.data.data);
+                q.resolve(response);
             }, function (response) {
-                console.log(response);
                 q.reject(response);
             });
             return q.promise;
